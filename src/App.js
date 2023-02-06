@@ -1,8 +1,14 @@
 import { useState, useCallback } from 'react';
 import { getItemsFromLS, saveItemsToLS } from './service/Service';
+import styled from 'styled-components';
 import Input from './components/Input';
+import Filters from './components/Filters';
 import TodoList from './components/TodoList';
 import './App.css';
+
+const Div = styled.div`
+  margin-top: 15px;
+`
 
 function App() {
   const [todoItems, setTodoItems] = useState(getItemsFromLS('item') || []);
@@ -33,18 +39,49 @@ function App() {
     saveItemsToLS('item', todoItems)
   }, [todoItems])
 
+  const handleFilters = useCallback(complete => {
+    const todoItems = getItemsFromLS('item');
+    let updatedTodoItems;
+    if(complete === null) {
+      updatedTodoItems = todoItems;
+    } else {
+      updatedTodoItems = todoItems.filter(item => item.complete === complete);
+    }
+    setTodoItems(updatedTodoItems)
+  }, [])
+
+
+  const handleClearAll = useCallback(() => {
+    setTodoItems([]);
+    saveItemsToLS('item', [])
+  }, [])
+
   return (
     <div className="app">
-      <header>
+      {/*<header>
         Todo List App
-      </header>
+      </header>*/}
       <main>
+        <h3>Todo List App</h3>
         <Input addItem={handleAddItem} />
-        <TodoList
-          todoItems={todoItems}
-          deleteItem={handleDeleteItem}
-          onToggle={handleToggleComplete}
+        <Filters
+          filterItems={handleFilters}
+          clearAll={handleClearAll}
         />
+        {
+          todoItems && todoItems.length <= 0  && (
+            <Div>You don't have any tasks</Div>
+          )
+        }
+        {
+          todoItems && todoItems.length > 0 && (
+          <TodoList
+            todoItems={todoItems}
+            deleteItem={handleDeleteItem}
+            onToggle={handleToggleComplete}
+          />
+          )
+        }
       </main>
       <footer>
         <img alt="foot-clan-logo" src="./footclan_logo.png" />

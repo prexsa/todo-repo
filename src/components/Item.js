@@ -13,6 +13,9 @@ const ItemArea = styled.div`
   margin: auto;
   width: 85%;
   border-bottom: 1px solid #ccc;
+  &:hover {
+    cursor: pointer;
+  }
 `
 
 const ListItem = styled.div`
@@ -21,16 +24,25 @@ const ListItem = styled.div`
   column-gap: 6px;
 `
 
-const DeleteButton = styled.button`
+const ItemPTag = styled.p`
+  margin: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  line-height: 1.1em;
+  text-align: left;
+  text-decoration: ${props => props.complete ? 'line-through' : ''}
+`
+
+/*const DeleteButton = styled.button`
   background: #ced5e0;
   border: 1px solid #ced5e0;
   color: #4A5568;
-  /*width: 10%;*/
-  /*padding: 10px;
-  margin-left: 15px;*/
+  // width: 10%;
+  // padding: 10px;
+  // margin-left: 15px;
   border-radius: 3px;
   height: fit-content;
-`
+`*/
 
 const DeleteTxt = styled.div`
   background: #f8fafc;
@@ -59,11 +71,12 @@ const Item = ({ id, content, complete, deleteItem, onToggle }) => {
   return (
     <ItemArea>
       <ListItem key={id}>
-        <input type="checkbox" onClick={handleOnToggle} />
-        <p
+        <input type="checkbox" checked={complete} onChange={handleOnToggle} />
+        <ItemPTag complete={complete}>{content}</ItemPTag>
+        {/*<p
           style={{textDecoration: complete ? "line-through": ""}}
           onClick={handleOnToggle}
-        >{content}</p>
+        >{content}</p>*/}
       </ListItem>
       <DeleteTxt onClick={handleDelete}>delete</DeleteTxt>
     </ItemArea>

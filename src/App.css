@@ -10,17 +10,18 @@ main {
   margin: 20px auto;
   border-radius: 7px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  padding: 28px 0 30px;
+  padding: 10px 0 30px;
 }
-header {
+main h3 {
   font-size: 22px;
   font-weight: 600;
   color: #4A5568;
+  margin-top: 10px;
 }
 footer {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: 400px;
   height: 2.5rem;
   display: flex;
   justify-content: center;
