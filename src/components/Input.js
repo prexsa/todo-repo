@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
@@ -39,16 +39,32 @@ const Form = styled.form`
   width: 100%;
 `
 
-const Input = ({ addItem }) => {
+const Input = ({ addItem, updateTask, task }) => {
   const [inputValue, setInputValue] = useState('');
+  const [updateTaskToggle, setUpdateTaskToggle] = useState(false);
+
+  useEffect(() => {
+    if(task.content) {
+      setInputValue(task.content);
+      setUpdateTaskToggle(true);
+    }
+  }, [task.content])
 
   const handleSubmit = e => {
     e.preventDefault();
 
     if(inputValue.trim() === '') return;
+    if(updateTaskToggle) {
+      updateTask(task.id, inputValue.trim());
+      setInputValue('');
+      e.target.reset();
+      setUpdateTaskToggle(false);
+      return;
+    }
+
     const item = {
       id: uuidv4(),
-      content: inputValue,
+      content: inputValue.trim(),
       complete: false
     }
     addItem(item);
@@ -63,7 +79,7 @@ const Input = ({ addItem }) => {
       <Form onSubmit={handleSubmit}>
         <InputForm
           onChange={handleChange}
-          input={inputValue}
+          value={inputValue}
           placeholder="Add a task"
         />
           <SubmitButton type="submit">Add</SubmitButton>
@@ -74,6 +90,12 @@ const Input = ({ addItem }) => {
 
 Input.propTypes = {
   addItem: PropTypes.func.isRequired,
+  task: PropTypes.shape({
+    id: PropTypes.string,
+    content: PropTypes.string,
+    complete: PropTypes.bool
+  }).isRequired,
+  updateTask: PropTypes.func.isRequired
 }
 
 export default Input;

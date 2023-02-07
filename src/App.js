@@ -1,17 +1,13 @@
 import { useState, useCallback } from 'react';
 import { getItemsFromLS, saveItemsToLS } from './service/Service';
-import styled from 'styled-components';
 import Input from './components/Input';
 import Filters from './components/Filters';
 import TodoList from './components/TodoList';
 import './App.css';
 
-const Div = styled.div`
-  margin-top: 15px;
-`
-
 function App() {
   const [todoItems, setTodoItems] = useState(getItemsFromLS('item') || []);
+  const [editTask, setEditTask] = useState({});
 
   const handleAddItem = useCallback(item => {
     const items = [
@@ -50,6 +46,22 @@ function App() {
     setTodoItems(updatedTodoItems)
   }, [])
 
+  const handleOnEditSelect = useCallback((id) => {
+    const task = todoItems.filter(item => item.id === id);
+    setEditTask(task[0])
+  }, [todoItems])
+
+  const handleUpdateTask = useCallback((id, content) => {
+    todoItems.forEach(item => {
+      if(item.id === id) {
+        item.content = content;
+      }
+      return item;
+    })
+    setEditTask({});
+    setTodoItems([...todoItems]);
+    saveItemsToLS('item', todoItems);
+  }, [todoItems])
 
   const handleClearAll = useCallback(() => {
     setTodoItems([]);
@@ -63,25 +75,21 @@ function App() {
       </header>*/}
       <main>
         <h3>Todo List App</h3>
-        <Input addItem={handleAddItem} />
+        <Input
+          addItem={handleAddItem}
+          task={editTask}
+          updateTask={handleUpdateTask}
+        />
         <Filters
           filterItems={handleFilters}
           clearAll={handleClearAll}
         />
-        {
-          todoItems && todoItems.length <= 0  && (
-            <Div>You don't have any tasks</Div>
-          )
-        }
-        {
-          todoItems && todoItems.length > 0 && (
-          <TodoList
-            todoItems={todoItems}
-            deleteItem={handleDeleteItem}
-            onToggle={handleToggleComplete}
-          />
-          )
-        }
+        <TodoList
+          todoItems={todoItems}
+          deleteItem={handleDeleteItem}
+          onToggle={handleToggleComplete}
+          onEditSelect={handleOnEditSelect}
+        />
       </main>
       <footer>
         <img alt="foot-clan-logo" src="./footclan_logo.png" />

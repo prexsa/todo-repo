@@ -13,6 +13,9 @@ const ItemArea = styled.div`
   margin: auto;
   width: 85%;
   border-bottom: 1px solid #ccc;
+`
+
+const Checkbox = styled.input.attrs({ type: 'checkbox' })`
   &:hover {
     cursor: pointer;
   }
@@ -33,21 +36,9 @@ const ItemPTag = styled.p`
   text-decoration: ${props => props.complete ? 'line-through' : ''}
 `
 
-/*const DeleteButton = styled.button`
-  background: #ced5e0;
-  border: 1px solid #ced5e0;
+const ItemControl = styled.div`
   color: #4A5568;
-  // width: 10%;
-  // padding: 10px;
-  // margin-left: 15px;
-  border-radius: 3px;
-  height: fit-content;
-`*/
-
-const DeleteTxt = styled.div`
-  background: #f8fafc;
-  border: 1px solid #ced5e0;
-  color: #4A5568;
+  margin: 0 2px;
   border-radius: 3px;
   height: fit-content;
   font-size: 11px;
@@ -58,7 +49,17 @@ const DeleteTxt = styled.div`
   }
 `
 
-const Item = ({ id, content, complete, deleteItem, onToggle }) => {
+const DeleteTxt = styled(ItemControl)`
+  background: #f8fafc;
+  border: 1px solid #ced5e0;
+`
+
+const EditTxt = styled(ItemControl)`
+  // background: #f8fafc;
+  border: 1px solid transparent;
+`
+
+const Item = ({ id, content, complete, deleteItem, onToggle, onEditSelect }) => {
 
   const handleDelete = useCallback(() => {
     deleteItem(id);
@@ -68,17 +69,18 @@ const Item = ({ id, content, complete, deleteItem, onToggle }) => {
     onToggle(id)
   }, [id, onToggle])
 
+  const handleTaskEdit = useCallback(() => {
+    onEditSelect(id)
+  }, [id, onEditSelect])
+
   return (
     <ItemArea>
       <ListItem key={id}>
-        <input type="checkbox" checked={complete} onChange={handleOnToggle} />
+        <Checkbox type="checkbox" checked={complete} onChange={handleOnToggle} />
         <ItemPTag complete={complete}>{content}</ItemPTag>
-        {/*<p
-          style={{textDecoration: complete ? "line-through": ""}}
-          onClick={handleOnToggle}
-        >{content}</p>*/}
       </ListItem>
-      <DeleteTxt onClick={handleDelete}>delete</DeleteTxt>
+      <EditTxt onClick={handleTaskEdit}>edit</EditTxt>
+      <DeleteTxt onClick={handleDelete}>del</DeleteTxt>
     </ItemArea>
   )
 }
@@ -89,6 +91,7 @@ Item.propTypes = {
   complete: PropTypes.bool.isRequired,
   deleteItem: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
+  onEditSelect: PropTypes.func.isRequired,
 }
 
 export default Item;

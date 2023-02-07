@@ -8,9 +8,16 @@ const ListArea = styled.div`
   flex-direction: column;
 `
 
-const TodoList = ({ todoItems, deleteItem, onToggle }) => {
+const Div = styled.div`
+  margin-top: 15px;
+`
+
+const TodoList = ({ todoItems, deleteItem, onToggle, onEditSelect }) => {
   // console.log('todoItems: ', todoItems)
-  return (
+
+  return todoItems.length <= 0 ? <Div>You don't have any tasks</Div>
+  :
+  (
     <ListArea>
       {
         todoItems.map(({id, content, complete }) => (
@@ -21,6 +28,7 @@ const TodoList = ({ todoItems, deleteItem, onToggle }) => {
             complete={complete}
             deleteItem={deleteItem}
             onToggle={onToggle}
+            onEditSelect={onEditSelect}
           />
         ))
       }
@@ -38,6 +46,7 @@ TodoList.propTypes = {
   ).isRequired,
   deleteItem: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
+  onEditSelect: PropTypes.func.isRequired,
 };
 
 export default TodoList;
